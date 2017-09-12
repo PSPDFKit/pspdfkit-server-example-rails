@@ -23,3 +23,7 @@ The example app is now running on <http://localhost:3000>.
 Login using any user name and upload a PDF, then click on the cover image to see PSPDFKit Web in action.
 
 You can also selectively share PDFs with other users you have created.
+
+## Contributing
+  
+Please ensure [you signed our CLA](https://pspdfkit.com/guides/web/current/miscellaneous/contributing/) so we can accept your contributions.
