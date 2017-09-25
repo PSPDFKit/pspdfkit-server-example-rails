@@ -1,0 +1,67 @@
+<script type="text/javascript" src="<%= PSPDFKit.external_url %>/pspdfkit.js"></script>
+
+<header class="navbar">
+  <div class="navbar-left">
+    <a href="/" class="navbar-icon">&lt;</a>
+  </div>
+  <div class="navbar-center">
+    <h1><%= @document.title %></h1>
+  </div>
+  <div class="navbar-right">
+    <% if instant_enabled? %>
+      <a href="?instant=false" class="btn btn-success navbar-btn">Instant: ON</a>
+    <% else %>
+      <a href="?instant=true" class="btn btn-default navbar-btn">Instant: OFF</a>
+    <% end %>
+    <% if current_user == @document.owner %>
+      <%= link_to 'Delete document', document_path(@document), method: :delete, class: "btn btn-danger navbar-btn", data: { confirm: "are you sure?" } %>
+    <% end %>
+  </div>
+</header>
+
+<main class="document">
+  <div id="doc-viewer" class="viewer"></div>
+  <script>
+    var configuration = {
+      authPayload: {
+        jwt: <%= PSPDFKit.jwt_sign({
+          document_id: @document.server_id,
+          permissions: [
+            'read-document',
+            'edit-annotations',
+            'download'
+          ]
+        }).to_json.html_safe %>
+      },
+      container: "#doc-viewer",
+      documentId: "<%= @document.server_id %>",
+      instant: <%= instant_enabled? %>,
+    };
+
+    PSPDFKit.load(configuration).catch(function(error) {
+      console.log(error);
+    });
+  </script>
+  <div class="sidebar">
+    <h3 class="sidebar-title">Who can see this document?</h3>
+    <%= form_tag share_document_path(@document), method: :post do |f| %>
+      <ul class="list-group">
+      <% User.all.each do |u| %>
+        <li class="list-group-item">
+          <label>
+            <% if @document.owner == u %>
+              <%= check_box_tag "owner", u.id, true, disabled: true %>
+              <span class="owner">
+                <%= u.name %> (Owner)
+              </span>
+            <% else %>
+              <%= check_box_tag "users[]", u.id, u.has_access?(@document) %><%= u.name %>
+            <% end %>
+          </label>
+        </li>
+      <% end %>
+      </ul>
+    <%= submit_tag "Update Share Settings", class: "btn list-group-btn" %>
+    <% end %>
+  </div>
+</main>
