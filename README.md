@@ -59,6 +59,11 @@ Login using any user name and upload a PDF, then click on the cover image to see
 
 You can also selectively share PDFs with other users you have created.
 
+You can quit the running containers with Ctrl-C.
+
+If you want to test PSPDFKit for Web on different devices in your local network, you need
+to edit the `PSPDFKIT_SERVER_EXTERNAL_URL` environment variable in the `docker-compose.yml` and set it to an address that's reachable from your device.
+
 ## Contributing
 
 Please ensure [you signed our CLA](https://pspdfkit.com/guides/web/current/miscellaneous/contributing/) so we can accept your contributions.
