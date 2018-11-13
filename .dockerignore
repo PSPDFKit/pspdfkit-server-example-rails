@@ -1,0 +1,6 @@
+.git*
+log/*
+tmp/*
+.bundle
+Dockerfile
+asset_storage
