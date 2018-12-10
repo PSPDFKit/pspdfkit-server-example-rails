@@ -34,6 +34,12 @@ $ docker-compose up
 Make sure to replace `YOUR_ACTIVATION_KEY_GOES_HERE` with your [PSPDFKit Server activation key](#request-a-license).
 You only have to provide the activation key once, after that the server will remain activated until you reset it.
 
+Once all containers are running, it's necessary to apply database migrations. You can do so by running:
+
+```shell
+docker-compose exec -T example ./bin/rails db:migrate
+```
+
 The example app is now running on <http://localhost:3000>. You can access PSPDFKit Server's
 dashboard at <http://localhost:5000/dashboard> using `dashboard` // `secret`.
 
