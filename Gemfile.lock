@@ -46,7 +46,7 @@ GEM
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.6.1)
-    ffi (1.9.18)
+    ffi (1.11.1)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
     http-cookie (1.0.3)
