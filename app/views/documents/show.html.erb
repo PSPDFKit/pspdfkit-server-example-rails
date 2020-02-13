@@ -1,0 +1,93 @@
+<script type="text/javascript" src="<%= PSPDFKit.external_url %>/pspdfkit.js"></script>
+
+<header class="navbar">
+  <div class="navbar-left">
+    <a href="/" class="navbar-icon">&lt;</a>
+  </div>
+  <div class="navbar-center">
+    <h1><%= @document.title %></h1>
+  </div>
+  <div class="navbar-right">
+    <% if instant_enabled? %>
+      <a href="?instant=false" class="btn btn-success navbar-btn">Instant: ON</a>
+    <% else %>
+      <a href="?instant=true" class="btn btn-default navbar-btn">Instant: OFF</a>
+    <% end %>
+    <% if current_user == @document.owner %>
+      <%= link_to 'Delete document', document_path(@document), method: :delete, class: "btn btn-danger navbar-btn", data: { confirm: "are you sure?" } %>
+    <% end %>
+  </div>
+</header>
+
+<main class="document">
+  <div id="doc-viewer" class="viewer"></div>
+  <script>
+    var configuration = {
+      authPayload: {
+        jwt: <%= @document.get_jwt(@layer) %>
+      },
+      container: "#doc-viewer",
+      documentId: "<%= @document.server_id %>",
+      instant: <%= instant_enabled? %>,
+    };
+
+    PSPDFKit.load(configuration).catch(function(error) {
+      console.log(error);
+    });
+  </script>
+  <div class="sidebar">
+    <h3 class="sidebar-title">Who can see this document?</h3>
+    <%= form_tag share_document_path(@document), method: :post do |f| %>
+      <ul class="list-group">
+      <% User.all.each do |u| %>
+        <li class="list-group-item">
+          <label>
+            <% if @document.owner == u %>
+              <%= check_box_tag "owner", u.id, true, disabled: true %>
+              <span class="owner">
+                <%= u.name %> (Owner)
+              </span>
+            <% else %>
+              <%= check_box_tag "users[]", u.id, u.has_access?(@document) %><%= u.name %>
+            <% end %>
+          </label>
+        </li>
+      <% end %>
+      </ul>
+    <%= submit_tag "Update Share Settings", class: "btn list-group-btn" %>
+    <% end %>
+
+    <h3 class="sidebar-title">Available Layers</h3>
+    <ul class="list-group">
+      <% @layers.each do |l| %>
+      <li class="list-group-item<%= l === @layer ? ' current' : '' %>">
+          <% if (l == "") %>
+            <a href="/documents/<%= @document.id %>">
+              Default Layer
+            </a>
+            <% else  %>
+            <a href="/documents/<%= @document.id %>/layers/<%= l %>">
+              <%= l %>
+            </a>
+            <% end %>
+        </a>
+      </li>
+      <% end %>
+      <% unless @layers.include?(@layer) %>
+        <li class="list-group-item current">
+          <a href="/documents/< %= doc.id %>/< %= layer %>">
+            <%= @layer %>
+          </a>
+        </li>
+        <% end %>
+    </ul>
+    <div class="create-layer-form">
+      <h3 class="sidebar-title">Create New Layer</h3>
+      <%= form_tag "/documents/#{@document.id}/change_layer", method: :post do |f| %>
+        <%= text_field_tag "layer" %>
+        <%= hidden_field_tag "document_id", @document.id %>
+        <%= submit_tag "Create Layer", class: "btn list-group-btn" %>
+      <% end %>
+    </div>
+  </div>
+</main>
