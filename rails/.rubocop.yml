@@ -1,0 +1,22 @@
+AllCops:
+  NewCops: disable
+  Exclude:
+    - "db/schema.rb"
+
+Style/StringLiterals:
+  EnforcedStyle: "double_quotes"
+
+Style/AccessorGrouping:
+  EnforcedStyle: "separated"
+
+Style/Documentation:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/AbcSize:
+  Max: 30
