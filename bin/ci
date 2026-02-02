@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -eu
+
+bundle exec rubocop --fail-level A -P
+bundle exec bundle-audit check --update
+bundle exec brakeman --rails6 --no-pager
