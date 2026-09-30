@@ -1,0 +1,9 @@
+<main>
+  <%= form_tag login_path, class: "login" do %>
+    <h2>Login</h2>
+    <div class="form-group">
+      <%= text_field(:user, :name, placeholder: "username") %>
+      <%= submit_tag "Login", class: "btn" %>
+    </div>
+<% end %>
+</main>
